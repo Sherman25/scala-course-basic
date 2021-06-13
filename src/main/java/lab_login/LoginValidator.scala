@@ -10,27 +10,14 @@ object LoginValidator {
   */
 
   def validate(login: NewLogin): Unit = {
-    if(login.username.equals("admin")) {
-      println("Illegal username, can't be admin")
-      return
+    val answer = login match {
+      case NewLogin("admin", _, _) => "Illegal username, can't be admin"
+      case NewLogin(_, pass, _) if (pass.startsWith("z")) => s"Illegal password ${pass}, can't start with \'z\'"
+      case NewLogin(username, pass, _) if (username == pass) => "Password username can't be equal"
+      case NewLogin(_, pass, _) if (pass.forall(_.isDigit)) => "Password can't contain only digits"
+      case NewLogin(_, pass, confPass) if (pass != confPass) => s"${pass} and ${confPass} are not equals"
+      case NewLogin(_,_,_) => "Accept"
     }
-    if(login.password.startsWith("z")) {
-      println("Illegal password, can't start with \"z\"")
-      return
-    }
-    if(login.password.equals(login.username)) {
-      println("Illegal password, can't be equal")
-      return
-    }
-    if(login.password.forall(_.isDigit)) {
-      println("Illegal password, can't contain only digits")
-      return
-    }
-    if(!login.password.equals(login.confirmPassword)) {
-      println("The password and confirm password are not equal")
-      return
-    }
-
-    else println("Accepted")
+    println(answer)
   }
 }
